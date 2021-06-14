@@ -50,12 +50,18 @@ namespace FilmsCatalog.BL.Implementations
 
         public IEnumerable<Film> GetAllFilms()
         {
-            return context.Films.ToList();
+            var query = from b in context.Films
+                        orderby b.Id descending
+                        select b;
+            return query.ToList();
         }
 
         public async Task<IEnumerable<Film>> GetAllFilmsAsync()
         {
-            return await context.Films.ToListAsync();
+            var query = from b in context.Films
+                        orderby b.Id descending
+                        select b;
+            return await query.ToListAsync();
         }
 
         public Film GetFilmInfo(int filmID)
