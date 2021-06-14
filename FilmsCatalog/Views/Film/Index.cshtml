@@ -1,0 +1,95 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<FilmsCatalog.PL.Models.FilmViewModel>
+@using FilmsCatalog.DL.Entity
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+@if(SignInManager.IsSignedIn(User))
+{
+<p>
+    <a asp-controller="Film" asp-action="New">Добавить</a>
+</p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Poster)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.YearRelease)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieDirector)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserPosted)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
+        <tr>
+            <td>
+                @if (item.Poster != null)
+                {
+                    <img style='width: 100%; height: 100%;' src="data:image;base64,@System.Convert.ToBase64String(@item.Poster)" />
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.YearRelease)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieDirector)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserPosted)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Просмотр</a>
+                @if (SignInManager.IsSignedIn(User) && item.UserPosted == User.Identity.Name)
+                {
+                    <a asp-controller="Film" asp-action="Edit" asp-route-id="@item.Id">Редактировать</a>
+                }
+                @*<a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>*@
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+@if (ViewBag.Page > 0)
+{
+<a href="@Url.Action("Index", new { page = ViewBag.Page - 1 })"
+   class="btn btn-default">
+    &laquo; Назад
+</a>
+}
+@if (ViewBag.Page < ViewBag.MaxPage)
+{
+<a href="@Url.Action("Index", new { page = ViewBag.Page + 1 })"
+   class="btn btn-default">
+    Далее &raquo;
+</a>
+}
